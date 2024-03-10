@@ -10,7 +10,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/components/effect-coverflow/effect-coverflow.min.css';
 SwiperCore.use([EffectCoverflow]);
-
+import ShareModel from './ShareModel'
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
 import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
@@ -80,6 +80,7 @@ export default function Story() {
 
   // Function to toggle star state of a category
   const toggleStarred = (category) => {
+    
     if (category === '') {
       return;
     }
@@ -92,7 +93,7 @@ export default function Story() {
       // If category is not starred, add it to starredCategories
       setStarredCategories([...starredCategories, category]);
     }
-   
+   console.log(starredCategories)
   };
   
 
@@ -138,18 +139,7 @@ const handleShareClick = () => {
  };
    
  // Modal component for sharing
-const ShareModal = ({ url, show, onClose }) => {
-  if (!show) return null;
-  return (
-     <div className="share-modal">
-       <div className="share-modal-content">
-         <p>Share this URL:</p>
-         <input type="text" value={url} readOnly />
-         <button onClick={onClose}>Close</button>
-       </div>
-     </div>
-  );
- };
+
 
 
     function getCurrentDateTime(){
@@ -643,13 +633,14 @@ const ShareModal = ({ url, show, onClose }) => {
             <AiFillStar
               className="star-icon"
               onClick={() => toggleStarred(selectedValue)} 
-              style={{ color: selectedValue && selectedValue !== '' && starredCategories.includes(selectedValue) ? 'gold' : 'inherit' }}
+              style={{ color: selectedValue !== '' && starredCategories.includes(selectedValue) ? 'gold' : 'inherit' }}
             />  
-            <AiOutlineShareAlt
+            {/* Other components */}
+    <AiOutlineShareAlt
       className="share-icon"
       onClick={handleShareClick}
     />
-    <ShareModal url={shareUrl} show={showShareModal} onClose={() => setShowShareModal(false)} />
+    <ShareModel url={shareUrl} show={showShareModal} onClose={() => setShowShareModal(false)} />
             <div className='looking'>
               <div className='choose'>
                 <label htmlFor='choose'><h3>What are you looking for?</h3>
