@@ -4,7 +4,7 @@ import { BiChevronDown } from "react-icons/bi"
 import { BsPen, BsArrowLeft } from "react-icons/bs"
 import Popular from './Popular'
 import { CgArrowsExchangeAltV } from "react-icons/cg"
-import { AiOutlineSearch, AiFillStar } from "react-icons/ai"; // Import star icons
+import { AiOutlineSearch, AiFillStar , AiOutlineShareAlt } from "react-icons/ai"; // Import star icons
 import SwiperCore, { EffectCoverflow } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
@@ -28,6 +28,8 @@ const cat = ref(database, 'Category')
 let initialCategories = ['FIGMA', 'FOOD', 'ENGINEERING', 'CINEMA', 'JOURNALISM']
 
 export default function Story() {
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareUrl, setShareUrl] = useState('');
   const [swiper, setSwiper] = useState(null);
   const [isCategoryStarred, setIsCategoryStarred] = useState(false); // to keep track of whether the category is starred
   const [subject, setSubject] = useState('')
@@ -124,6 +126,30 @@ export default function Story() {
       });
     }
   }, [selectedValue]);
+
+  // Inside your Story component
+const handleShareClick = () => {
+  // Generate the URL for the category
+  // Assuming your application is hosted at https://yourwebsite.com
+  const baseUrl = window.location.origin; // This gets the current origin (e.g., https://yourwebsite.com)
+  const categoryUrl = `${baseUrl}/categories/${selectedValue}`;
+  setShareUrl(categoryUrl);
+  setShowShareModal(true);
+ };
+   
+ // Modal component for sharing
+const ShareModal = ({ url, show, onClose }) => {
+  if (!show) return null;
+  return (
+     <div className="share-modal">
+       <div className="share-modal-content">
+         <p>Share this URL:</p>
+         <input type="text" value={url} readOnly />
+         <button onClick={onClose}>Close</button>
+       </div>
+     </div>
+  );
+ };
 
 
     function getCurrentDateTime(){
@@ -619,6 +645,11 @@ export default function Story() {
               onClick={() => toggleStarred(selectedValue)} 
               style={{ color: selectedValue && selectedValue !== '' && starredCategories.includes(selectedValue) ? 'gold' : 'inherit' }}
             />  
+            <AiOutlineShareAlt
+      className="share-icon"
+      onClick={handleShareClick}
+    />
+    <ShareModal url={shareUrl} show={showShareModal} onClose={() => setShowShareModal(false)} />
             <div className='looking'>
               <div className='choose'>
                 <label htmlFor='choose'><h3>What are you looking for?</h3>
