@@ -179,6 +179,7 @@ const handleShareClick = () => {
   
   function handleSearch2(e){
     setSearch(e.target.value)
+   
     setMenu(false)
     setShow3(true)
     
@@ -194,6 +195,7 @@ const handleShareClick = () => {
   }
 
   function handleCategorySelect2(category){
+    console.log(category)
     setSelectedValue(category);
     setSearch(category)
     setSearchResults2([])
@@ -296,14 +298,17 @@ const handleShareClick = () => {
     }
   }, [])
 
-  const dropdownRef = useRef(null); // Step 1: Create a ref for the dropdown
+  const divRef = useRef(null); // Step 1: Create a ref for the dropdown
 
  useEffect(() => {
     // Step 2: Add a click event listener to the document
     function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      console.log(divRef.current)
+      console.log(event.target)
+      if (divRef.current && !divRef.current.contains(event.target)) {
         // If the click is outside the dropdown, close it
         setShow3(false)
+        
        
          // Assuming 'setShow' is the function to close the dropdown
       }
@@ -316,7 +321,7 @@ const handleShareClick = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
- }, []); 
+ }, [show3]); 
 
   useEffect(() => {
     windowWidth >425 ? setContent(true) : setContent(false)
@@ -594,18 +599,19 @@ const handleShareClick = () => {
                     onChange={(e) => handleValue(e)} required/>
               </div>
 
-              <div className='selectCategory'>
+              <div className='selectCategory' >
 
-                <div className='select-btn' onClick={handleShow} ref = {dropdownRef}>
+                <div className='select-btn' onClick={handleShow} >
                   {selectedCategory ? <span>{selectedCategory.toUpperCase()}</span> : 
                   <span>Select a category</span>}
                   <BiChevronDown className='down'/>
                 </div>
                 
                 {show && <div className='content' >
-                  <div className='search'>
+                  <div className='search' >
                     <AiOutlineSearch className='search-btn'/>
                     <input
+                      
                       type="text"
                       id='category'
                       placeholder="Search"
@@ -615,7 +621,7 @@ const handleShareClick = () => {
 
 
                   {searchText.length === 0 ? 
-                    (<ul className='search-list'>
+                    (<ul className='search-list' >
                     {initialCategories.map(category => (
                       <li key={category} onClick={() => handleCategorySelect(category)}>
                         {category}
@@ -689,10 +695,11 @@ const handleShareClick = () => {
                     onChange={handleSearch2} required/>
                 <BiChevronDown className='btn-2' onClick={handleClick2}/>
               </div>
-              
+             
             
               {(show4) ? (
                 <ul className='search-list search-list-2'>
+                  
                 {initialCategories.map(category => (
                   <li key={category} onClick={() => handleCategorySelect2(category)}>
                     {category}
