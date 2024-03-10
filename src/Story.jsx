@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useState ,useRef} from 'react'
 import Navbar from './Navbar'
 import { BiChevronDown } from "react-icons/bi"
 import { BsPen, BsArrowLeft } from "react-icons/bs"
@@ -296,6 +296,28 @@ const handleShareClick = () => {
     }
   }, [])
 
+  const dropdownRef = useRef(null); // Step 1: Create a ref for the dropdown
+
+ useEffect(() => {
+    // Step 2: Add a click event listener to the document
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        // If the click is outside the dropdown, close it
+        setShow3(false)
+       
+         // Assuming 'setShow' is the function to close the dropdown
+      }
+    }
+
+    // Add the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Step 3: Clean up the event listener
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+ }, []); 
+
   useEffect(() => {
     windowWidth >425 ? setContent(true) : setContent(false)
   }, [windowWidth])
@@ -574,7 +596,7 @@ const handleShareClick = () => {
 
               <div className='selectCategory'>
 
-                <div className='select-btn' onClick={handleShow}>
+                <div className='select-btn' onClick={handleShow} ref = {dropdownRef}>
                   {selectedCategory ? <span>{selectedCategory.toUpperCase()}</span> : 
                   <span>Select a category</span>}
                   <BiChevronDown className='down'/>
@@ -630,23 +652,35 @@ const handleShareClick = () => {
  {/* Updated heading to dynamically include selected category */}
           <h1>Read stories on {selectedValue ? selectedValue : 'selected category'}</h1>
             {/* Star icon to star categories */}
-            <AiFillStar
+          
+            <div className='looking'>
+              <div className='choose'>
+                <label htmlFor='choose'><h3>What are you looking for?</h3>
+                </label>
+                <div style = {{display: 'flex' }}> <AiFillStar
               className="star-icon"
               onClick={() => toggleStarred(selectedValue)} 
-              style={{ color: selectedValue !== '' && starredCategories.includes(selectedValue) ? 'gold' : 'inherit' }}
+              style={{ color: selectedValue !== '' && starredCategories.includes(selectedValue) ? 'gold' : 'inherit' , cursor : 'pointer' }}
             />  
             {/* Other components */}
     <AiOutlineShareAlt
       className="share-icon"
       onClick={handleShareClick}
+      style = {
+        {cursor : 'pointer ' }
+      }
     />
-    <ShareModel url={shareUrl} show={showShareModal} onClose={() => setShowShareModal(false)} />
-            <div className='looking'>
-              <div className='choose'>
-                <label htmlFor='choose'><h3>What are you looking for?</h3>
-                </label>
-                 
+    <ShareModel url={shareUrl} show={showShareModal} onClose={() => setShowShareModal(false)} />  <div className='flex-filter'>
+            
+            <h2 className='filter-heading'>Sort: 
+              <span onClick={handleflip}>
+                {flipped ? `Newest to Oldest` : `Oldest to Newest`}
+                </span>
+            </h2>
+            <CgArrowsExchangeAltV  className='filterarrow' onClick={handleflip}/>
+          </div></div>
                 <input
+                
                     type="text"
                     id='choose'
                     placeholder="Browse a Category"
@@ -690,14 +724,7 @@ const handleShareClick = () => {
 
           <div className='filter'>
             <h1 className='total-story'><span>{stories === 1 ? `${stories} story` : stories === 0 ? `0 story` : `${stories} stories`}</span> for you to read</h1>
-            <div className='flex-filter'>
-              <h2 className='filter-heading'>Sort: 
-                <span onClick={handleflip}>
-                  {flipped ? `Newest to Oldest` : `Oldest to Newest`}
-                  </span>
-              </h2>
-              <CgArrowsExchangeAltV  className='filterarrow' onClick={handleflip}/>
-            </div>
+           
           </div>
           
           { windowWidth > 425 ? <div>
