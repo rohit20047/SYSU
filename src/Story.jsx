@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-
+import Navbar from './Navbar'
 import { BiChevronDown } from "react-icons/bi"
 import { BsPen, BsArrowLeft } from "react-icons/bs"
 import Popular from './Popular'
@@ -72,7 +72,6 @@ export default function Story() {
   useEffect(() => {
     // Save starred categories to localStorage whenever it changes
     localStorage.setItem('starredCategories', JSON.stringify(starredCategories));
-    console.log("jjjjjjjj",starredCategories)
     // Update isCategoryStarred based on starredCategories
     setIsCategoryStarred(starredCategories.length > 0);
   }, [starredCategories]);
@@ -523,8 +522,10 @@ export default function Story() {
   }
 
   return (
+  <>
+  <Navbar/>
     <div className='flex'>
-      {console.log("story", isCategoryStarred)}
+      
        <Popular onChildValue={handleChildValue} isCategoryStarred={isCategoryStarred} />
   
       <div className='story-section'>
@@ -618,7 +619,6 @@ export default function Story() {
               onClick={() => toggleStarred(selectedValue)} 
               style={{ color: selectedValue && selectedValue !== '' && starredCategories.includes(selectedValue) ? 'gold' : 'inherit' }}
             />  
-            {console.log(starredCategories.includes(selectedValue) )}
             <div className='looking'>
               <div className='choose'>
                 <label htmlFor='choose'><h3>What are you looking for?</h3>
@@ -765,5 +765,6 @@ export default function Story() {
         </section>       
       </div>
     </div>
+    </>
   )
 }
