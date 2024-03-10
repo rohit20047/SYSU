@@ -29,7 +29,7 @@ let initialCategories = ['FIGMA', 'FOOD', 'ENGINEERING', 'CINEMA', 'JOURNALISM']
 
 export default function Story() {
   const [swiper, setSwiper] = useState(null);
-
+  const [isCategoryStarred, setIsCategoryStarred] = useState(false); // to keep track of whether the category is starred
   const [subject, setSubject] = useState('')
   const [describe, setDescribe] = useState('')
   const [searchText, setSearchText] = useState('')
@@ -66,14 +66,24 @@ export default function Story() {
     const storedCategories = localStorage.getItem('starredCategories');
     return storedCategories ? JSON.parse(storedCategories) : [];
   });
+  
+
 
   useEffect(() => {
     // Save starred categories to localStorage whenever it changes
     localStorage.setItem('starredCategories', JSON.stringify(starredCategories));
+    console.log("jjjjjjjj",starredCategories)
+    // Update isCategoryStarred based on starredCategories
+    setIsCategoryStarred(starredCategories.length > 0);
   }, [starredCategories]);
 
   // Function to toggle star state of a category
   const toggleStarred = (category) => {
+    if (category === '') {
+      return;
+    }
+  
+    // Check if category is already starred
     if (starredCategories.includes(category)) {
       // If category is already starred, remove it from starredCategories
       setStarredCategories(starredCategories.filter((c) => c !== category));
@@ -81,7 +91,9 @@ export default function Story() {
       // If category is not starred, add it to starredCategories
       setStarredCategories([...starredCategories, category]);
     }
+   
   };
+  
 
   
 
@@ -281,6 +293,8 @@ export default function Story() {
   function handleChildValue(value){
     setSelectedValue(value)
     setSearch('')
+    setIsCategoryStarred(true); // Update the local state to indicate a category has been starred
+
   }
 
   
@@ -510,7 +524,9 @@ export default function Story() {
 
   return (
     <div className='flex'>
-      <Popular onChildValue={handleChildValue} />
+      {console.log("story", isCategoryStarred)}
+       <Popular onChildValue={handleChildValue} isCategoryStarred={isCategoryStarred} />
+  
       <div className='story-section'>
 
         <form className='section-1' >
@@ -599,9 +615,10 @@ export default function Story() {
             {/* Star icon to star categories */}
             <AiFillStar
               className="star-icon"
-              onClick={() => toggleStarred(selectedValue)}
-              style={{ color: starredCategories.includes(selectedValue) ? 'gold' : 'inherit' }}
+              onClick={() => toggleStarred(selectedValue)} 
+              style={{ color: selectedValue && selectedValue !== '' && starredCategories.includes(selectedValue) ? 'gold' : 'inherit' }}
             />  
+            {console.log(starredCategories.includes(selectedValue) )}
             <div className='looking'>
               <div className='choose'>
                 <label htmlFor='choose'><h3>What are you looking for?</h3>
