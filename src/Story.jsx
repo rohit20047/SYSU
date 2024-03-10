@@ -1,10 +1,10 @@
 import React,{useEffect, useState} from 'react'
-import { AiOutlineSearch } from "react-icons/ai"
+
 import { BiChevronDown } from "react-icons/bi"
 import { BsPen, BsArrowLeft } from "react-icons/bs"
 import Popular from './Popular'
 import { CgArrowsExchangeAltV } from "react-icons/cg"
-
+import { AiOutlineSearch, AiFillStar } from "react-icons/ai"; // Import star icons
 import SwiperCore, { EffectCoverflow } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
@@ -61,6 +61,29 @@ export default function Story() {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+  const [starredCategories, setStarredCategories] = useState(() => {
+    // Load starred categories from localStorage or set an empty array
+    const storedCategories = localStorage.getItem('starredCategories');
+    return storedCategories ? JSON.parse(storedCategories) : [];
+  });
+
+  useEffect(() => {
+    // Save starred categories to localStorage whenever it changes
+    localStorage.setItem('starredCategories', JSON.stringify(starredCategories));
+  }, [starredCategories]);
+
+  // Function to toggle star state of a category
+  const toggleStarred = (category) => {
+    if (starredCategories.includes(category)) {
+      // If category is already starred, remove it from starredCategories
+      setStarredCategories(starredCategories.filter((c) => c !== category));
+    } else {
+      // If category is not starred, add it to starredCategories
+      setStarredCategories([...starredCategories, category]);
+    }
+  };
+
+  
 
   useEffect(() => {
     onValue(cat, function(snapshot){
@@ -571,12 +594,19 @@ export default function Story() {
         <section className='section-2'>
 
           <div className='section-2-head'>
-            {console.log(selectedValue)}
+ {/* Updated heading to dynamically include selected category */}
           <h1>Read stories on {selectedValue ? selectedValue : 'selected category'}</h1>
-
+            {/* Star icon to star categories */}
+            <AiFillStar
+              className="star-icon"
+              onClick={() => toggleStarred(selectedValue)}
+              style={{ color: starredCategories.includes(selectedValue) ? 'gold' : 'inherit' }}
+            />  
             <div className='looking'>
               <div className='choose'>
-                <label htmlFor='choose'><h3>What are you looking for?</h3></label>
+                <label htmlFor='choose'><h3>What are you looking for?</h3>
+                </label>
+                 
                 <input
                     type="text"
                     id='choose'
@@ -615,7 +645,8 @@ export default function Story() {
                     ))}
                     </ul>
                 )}
-            </div>          
+            </div>   
+                
           </div>
 
           <div className='filter'>
